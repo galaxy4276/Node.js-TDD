@@ -3,7 +3,7 @@ import router from './routes';
 import logger from 'morgan';
 import mongoose from 'mongoose';
 
-const app = express();
+export const app = express();
 
 mongoose.connect(`mongodb+srv://galaxy4276:chldmsrl12@cluster0.v29j3.mongodb.net/hello?retryWrites=true&w=majority`,
   {
@@ -24,6 +24,10 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/products', router);
+
+app.use((err, req, res, next) => {
+  res.status(500).json({ message: err.message });
+});
 
 app.listen(app.get('port'), app.set('host'), () => {
   console.log(`Running on http://${app.get('host')}:${app.get('port')}`);
