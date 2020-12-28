@@ -1,6 +1,35 @@
 import ProductModel from '../models/Product';
 
-export const createProduct = (req, res, next) => {
-  const createdProduct = ProductModel.create(req.body);
-  res.status(201).json(createdProduct);
+export const createProduct = async (req, res, next) => {
+  try {
+    const createdProduct = await ProductModel.create(req.body);
+    console.log('createdProduct', createdProduct);
+    res.status(201).json(createdProduct);
+  } catch (err) {
+    // next 에 에러인자를 담을 시,
+    next(err); // 비동기 에러를 처리하는 곳으로 보내준다.
+  }
 };
+
+export const getProducts = async (req, res, next) => {
+  try {
+    const allProducts = await ProductModel.find({});
+
+    res.status(200).json(allProducts);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const getProductById = async (req, res, next) => {
+  try {
+    const product = await ProductModel.findById(req.params.productId);
+    if (product)
+      return res.status(200).json(product);
+    else
+      return res.status(404).send();
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
