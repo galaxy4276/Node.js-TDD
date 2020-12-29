@@ -24,12 +24,45 @@ export const getProducts = async (req, res, next) => {
 export const getProductById = async (req, res, next) => {
   try {
     const product = await ProductModel.findById(req.params.productId);
-    if (product)
+    if (product) {
       return res.status(200).json(product);
-    else
-      return res.status(404).send();
+    }
+
+    return res.status(404).send();
   } catch (err) {
     console.log(err);
+    next(err);
+  }
+}
+
+export const updateProduct = async (req, res, next) => {
+  try {
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      { new: true },
+    );
+
+    if (updatedProduct) {
+      res.status(200).json(updatedProduct);
+    } else {
+      res.status(404).send();
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const deleteProduct = async (req, res, next) => {
+  try {
+    const deletedProduct = await ProductModel.findByIdAndDelete(req.params.productId);
+
+    if (deletedProduct) {
+      res.status(200).json(deletedProduct);
+    } else {
+      res.status(404).send();
+    }
+  } catch (err) {
     next(err);
   }
 }
